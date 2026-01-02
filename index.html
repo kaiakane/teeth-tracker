@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Retainer Cleaning Tracker</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f8f8f8;
+    color: #222;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+  }
+
+  h1 {
+    margin-bottom: 5px;
+  }
+
+  .time-display {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+  }
+
+  .status {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 20px 0;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-align: center;
+    min-width: 180px;
+  }
+
+  .status.clean { background: #d4edda; color: #155724; }
+  .status.soon { background: #fff3cd; color: #856404; }
+  .status.now { background: #f8d7da; color: #721c24; }
+
+  .timers {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 20px;
+  }
+
+  .timer-box {
+    background: #fff;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+  }
+
+  button {
+    flex: 1;
+    padding: 12px 0;
+    border: none;
+    border-radius: 10px;
+    background: #007bff;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  button:hover {
+    background: #0056b3;
+  }
+
+  @media (max-width: 400px) {
+    .timers {
+      max-width: 100%;
+    }
+  }
+</style>
+</head>
+<body>
+
+<h1>Retainer Cleaning Tracker</h1>
+<div class="time-display" id="currentTime">Current Time: --:--</div>
+
+<div class="timer-box">
+  <span>Since Last Cleaning:</span>
+  <span id="overallTimer">--</span>
+</div>
+
+<div class="timers">
+  <div class="timer-box">
+    <span>Ultrasonic Pod:</span>
+    <span id="ultrasonicTimer">--</span>
+  </div>
+  <div class="timer-box">
+    <span>Cleaning Tablet:</span>
+    <span id="tabletTimer">--</span>
+  </div>
+</div>
+
+<div class="status" id="status">--</div>
+
+<div class="buttons">
+  <button id="ultrasonicBtn">Ultrasonic Pod</button>
+  <button id="tabletBtn">Cleaning Tablet</button>
+</div>
+
+<script>
+const overallTimerEl = document.getElementById('overallTimer');
+const ultrasonicTimerEl = document.getElementById('ultrasonicTimer');
+const tabletTimerEl = document.getElementById('tabletTimer');
+const statusEl = document.getElementById('status');
+const currentTimeEl = document.getElementById('currentTime');
+
+const STORAGE_KEY = 'retainerCleaningData';
+
+// Load or initialize data
+let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+  lastOverall: null,
+  lastUltrasonic: null,
+  lastTablet: null
+};
+
+function saveData() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function timeSince(timestamp) {
+  if (!timestamp) return null;
+  const now = new Date();
+  const past = new Date(timestamp);
+  const diffMs = now - past;
+  const diffDays = diffMs / (1000 * 60 * 60 * 24);
+  return diffDays.toFixed(2);
+}
+
+function updateTimers() {
+  const now = new Date();
+  currentTimeEl.textContent = 'Current Time: ' + now.toLocaleString();
+
+  const overallDays = timeSince(data.lastOverall);
+  const ultrasonicDays = timeSince(data.lastUltrasonic);
+  const tabletDays = timeSince(data.lastTablet);
+
+  overallTimerEl.textContent = overallDays ? `${overallDays} days` : '--';
+  ultrasonicTimerEl.textContent = ultrasonicDays ? `${ultrasonicDays} days` : '--';
+  tabletTimerEl.textContent = tabletDays ? `${tabletDays} days` : '--';
+
+  // Update status
+  if (!overallDays) {
+    statusEl.textContent = 'All Clean';
+    statusEl.className = 'status clean';
+  } else {
+    const days = parseFloat(overallDays);
+    if (days <= 1) {
+      statusEl.textContent = 'All Clean';
+      statusEl.className = 'status clean';
+    } else if (days <= 3) {
+      statusEl.textContent = 'Clean Soon';
+      statusEl.className = 'status soon';
+    } else {
+      statusEl.textContent = 'Clean Now';
+      statusEl.className = 'status now';
+    }
+  }
+}
+
+function logCleaning(type) {
+  const now = new Date().toISOString();
+  data.lastOverall = now;
+  if (type === 'ultrasonic') {
+    data.lastUltrasonic = now;
+  } else if (type === 'tablet') {
+    data.lastTablet = now;
+  }
+  saveData();
+  updateTimers();
+}
+
+document.getElementById('ultrasonicBtn').addEventListener('click', () => logCleaning('ultrasonic'));
+document.getElementById('tabletBtn').addEventListener('click', () => logCleaning('tablet'));
+
+// Update timers every second
+setInterval(updateTimers, 1000);
+updateTimers();
+</script>
+
+</body>
+</html>
