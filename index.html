@@ -6,93 +6,59 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Retainer Cleaning Tracker</title>
 <style>
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f8f8f8;
-    color: #222;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    min-height: 100vh;
-  }
+ body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f8f8f8;
+  color: #222;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  min-height: 100vh;
+}
 
-  h1 {
-    margin-bottom: 5px;
-  }
-
-  .status {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin: 20px 0;
-    padding: 10px 20px;
-    border-radius: 8px;
-    text-align: center;
-    min-width: 180px;
-  }
-
-  .status.clean { background: #d4edda; color: #155724; }
-  .status.soon { background: #fff3cd; color: #856404; }
-  .status.now { background: #f8d7da; color: #721c24; }
-
-  .timers {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-    max-width: 300px;
-    margin-bottom: 20px;
-  }
-
-  .timer-box {
-    background: #fff;
-    padding: 15px 20px;
-    border-radius: 10px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .buttons {
-    display: flex;
-    gap: 15px;
-    margin-top: 10px;
-  }
-
-  button {
-    flex: 1;
-    padding: 12px 0;
-    border: none;
-    border-radius: 10px;
-    background: #007bff;
-    color: #fff;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-
-  button:hover {
-    background: #0056b3;
-  }
-
-  @media (max-width: 400px) {
-    .timers {
-      max-width: 100%;
-    }
-  }h1 {
+/* Title */
+h1 {
   font-size: 1.9rem;
   margin-bottom: 12px;
   text-align: center;
 }
 
+/* Time display */
 .time-display {
   font-size: 0.95rem;
   color: #666;
   text-align: center;
 }
 
-/* Make the main timer stand out */
+.time-display.secondary {
+  margin-top: 4px;
+  margin-bottom: 26px;
+  font-size: 0.9rem;
+  color: #777;
+}
+
+/* Timer containers */
+.timers {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 300px;
+  margin-bottom: 16px;
+}
+
+.timer-box {
+  background: #fff;
+  padding: 14px 18px;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Main (overall) timer */
 .timer-box.main {
   flex-direction: column;
   align-items: center;
@@ -111,54 +77,74 @@
   font-weight: 600;
 }
 
-/* Normalize card spacing */
-.timer-box {
-  padding: 14px 18px;
+/* Timer values */
+.timer-box span:last-child {
+  color: #333;
 }
 
-/* Reduce overall vertical gaps */
-.timers {
-  margin-bottom: 16px;
-}
-
-/* Status pill refinement */
+/* Status pill */
 .status {
+  font-size: 1.25rem;
+  font-weight: 600;
   margin: 14px 0 18px;
   padding: 10px 16px;
-  font-size: 1.25rem;
+  border-radius: 8px;
+  text-align: center;
+  min-width: 180px;
 }
 
-/* Button refinement */
+.status.clean {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status.soon {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status.now {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* Buttons */
 .buttons {
+  display: flex;
   gap: 12px;
+  margin-top: 10px;
+  width: 100%;
+  max-width: 300px;
 }
 
 button {
+  flex: 1;
   padding: 12px 10px;
-  font-size: 0.95rem;
+  border: none;
   border-radius: 8px;
-  font-weight: 700px;
+  background: #007bff;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700; /* FIXED */
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+button:hover {
+  background: #0056b3;
 }
 
 button:active {
   transform: scale(0.97);
 }
-  .timer-box span:last-child {
-  color: #333;
-}
 
-.timer-box span:last-child:empty,
-.timer-box span:last-child:contains("--") {
-  color: #aaa;
+/* Mobile safety */
+@media (max-width: 400px) {
+  .timers,
+  .buttons {
+    max-width: 100%;
+  }
 }
-.time-display.secondary {
-  margin-top: 4px;
-  margin-bottom: 26px;
-  font-size: 0.9rem;
-  color: #777;
-}
-
-
 </style>
 </head>
 <body>
